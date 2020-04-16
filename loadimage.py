@@ -11,7 +11,7 @@ labelPath ="C:\\Users\\INKOM06\\Pictures\\roadlane-detection-evaluation-2013\\da
 oriPath ="C:\\Users\\INKOM06\\Pictures\\roadlane-detection-evaluation-2013\\data_road\\training\\image_2\\"
 
 #idx = int(input("Image index that needs to be analysed? "))
-idx = 10
+idx = 0
 
 
 
@@ -65,6 +65,9 @@ for i in range(M):
 			#layImg[i,j,2] = 0
 
 
+b,g,r =  cv2.split(labImg)
+rgb_labImg = cv2.merge([r,g,b])
+
 b,g,r = cv2.split(oriImg)       # get b,g,r
 rgb_oriImg = cv2.merge([r,g,b])     # switch it to rgb
 
@@ -80,7 +83,8 @@ rgb_layImg = cv2.merge([r,g,b])     # switch it to rgb
 fig, axs = plt.subplots(3,1)
 fig.suptitle("Lane area segmentation")
 axs[0].imshow(rgb_oriImg)
-axs[1].imshow(labImg)
+#axs[1].imshow(labImg)
+axs[1].imshow(rgb_labImg)
 axs[2].imshow(rgb_layImg)
 plt.show()
 
