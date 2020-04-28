@@ -17,7 +17,7 @@ pathToSave = "C:\\Users\\INKOM06\\Documents\\[0--KEGIATAN-Ku-2020\\2020.01-006-A
 #fileTxtName = "rat30pct0414.txt"
 #nonRoadName = "nonroad30pct_0414.txt" 
 #NofImage = 1 #200
-idxSc = 210
+idxSc = 262
 
 ratio = 0.2
 ratioPct = int(ratio*100)
@@ -57,10 +57,22 @@ for idx in range(idxSc,(idxSc+1),1):
 
 	print(file)
 
+	print("Source files: ")
+	print(labFiles[idx])
+	print(oriFiles[idx])
+
 
 
 	labImg = cv2.imread(labFiles[idx])
 	oriImg = cv2.imread(oriFiles[idx])
+
+	fileName = oriFiles[idx]
+
+
+
+
+
+
 
 	M = labImg.shape[0]
 	N = labImg.shape[1]
@@ -98,13 +110,15 @@ for idx in range(idxSc,(idxSc+1),1):
 				roadClass = 1
 
 			outVal = ("%d, %d, %d,  %d,  %d, %d, %d"%(idx,i, j, r, g, b, roadClass))
-			print(outVal)
+			#print(outVal)
 
 			csvRoadFile.write(outVal+"\n")
 	
-	targetFile =pathToSave+"csvtest\\"+"tgt_"+file
+	targetFile =pathToSave+"csvtest\\"+"tgt_"+fileName[-12:]
+	labelFile =pathToSave+"csvtest\\"+"lbl_"+fileName[-12:]
 	#print(targetFile)
 	cv2.imwrite(targetFile, oriImg2)
+	cv2.imwrite(labelFile, labImg2)
 
 
 csvRoadFile.close()
@@ -113,6 +127,9 @@ csvRoadFile.close()
 deltaTime = time.time() - start_time 
 print("--- %5.5s seconds ---" % (deltaTime))
 
+print("File name "+file)
+
+print("Hello "+fileName[-12:])
 
 cv2.waitKey()
 cv2.destroyAllWindows()
