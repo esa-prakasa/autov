@@ -7,8 +7,7 @@ start_time = time.time()
 
 os.system("cls")
 
-
-
+# This the path for storing training data
 path = "C:\\Users\\INKOM06\\Pictures\\roadlane-detection-evaluation-2013\\training\\"
 #path = "C:\\Users\\INKOM06\\Pictures\\jagung2020\\largeDataSet\\true\\"
 labelPath = path + "gt_image_2\\"
