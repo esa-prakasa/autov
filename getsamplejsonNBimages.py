@@ -1,3 +1,14 @@
+#XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+#XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+#XXXXXXXXXXXXXXXXXXXX NON BODER EXTRACTION -- NON BODER EXTRACTION XXXXXXXXXXXXXXXXXXX
+#XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+#XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+#XXXXXXXXXXXXXXXXXXXX NON BODER EXTRACTION -- NON BODER EXTRACTION XXXXXXXXXXXXXXXXXXX
+#XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+#XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+
+
+
 import os  
 import json 
 import cv2
@@ -38,12 +49,13 @@ NAnnFiles = (len(annFiles))
 totalSubImgFiles = 0
 
 
+#for fileIdx in range (1): #(NAnnFiles):
 for fileIdx in range (NAnnFiles):
 
 	# Opening JSON file 
 	f = open(annPath+annFiles[fileIdx])
 	img = cv2.imread(imgPath+imgFiles[fileIdx]) 
-	img2 = img.copy()
+	rgbImg = img.copy()
 
 	blackImg = np.zeros((img.shape[0],img.shape[1]), dtype =np.uint8)
 
@@ -100,25 +112,56 @@ for fileIdx in range (NAnnFiles):
 
 	fSz = 30
 
-	print("------------------ pt -----------------")
-	pt = getLineCoordinates(blackImg2)
-	NPt = len(pt)
-	print(NPt)
-	for i in range(NPt):
-		print(str(i)+" "+str(pt[i]))
-		subImgRGB = getSubImgRGB(img2, fSz, pt[i][0], pt[i][1])
-		#cv2.imshow(str(i), subImgRGB)
-		idxStr = str(1000+i)
-		idxStr = idxStr[1:]
-		fileName = imgFiles[fileIdx]
-		fileName = fileName[:-4] 
-		fileName = fileName+idxStr+"_B.jpg"
-		totalSubImgFiles = totalSubImgFiles + 1
-		totalFileSize = totalSubImgFiles*(0.002)
 
-		print(str(totalSubImgFiles)+" "+str(i)+" "+fileName+ " ===> %5.2f"%(totalFileSize))
-		cv2.imwrite(pathToSave_B+fileName, subImgRGB)
+	M = rgbImg.shape[0]
+	N = rgbImg.shape[1]
 
+
+
+	def compArea(subImgLab):
+		M = subImgLab.shape[0]
+		N = subImgLab.shape[1]
+		area = 0
+
+		for i in range(M):
+			for j in range(N):
+				if (subImgLab[i,j,0]==255):
+					area = area + 1
+
+		pctArea = area/(M*N)
+
+		return pctArea, area 
+
+
+
+	idx = 0
+	dcP = 8
+	for i in range((M//3),(M-fSz),dcP):
+		for j in range((N//3),(N-fSz),dcP):
+			#print("%d %d"%(i,j))
+			ic = int(i)
+			jc = int(j)
+
+			subImgLab = blackImg2[ic:(ic+fSz), jc:(jc+fSz), :]
+			subImgRGB = rgbImg[ic:(ic+fSz), jc:(jc+fSz), :]
+
+			[pctArea, area] = compArea(subImgLab)
+			#print("%d   %3.2f  "%(idx, pctArea))
+
+			pctAreaS =("%2.2f"%(pctArea))
+
+			if (pctArea==0):
+				idxStr = str(1000+idx)
+				idxStr = idxStr[1:]
+				fileName = imgFiles[fileIdx]
+				fileName = fileName[:-4]
+				fileName = fileName+idxStr+"_NB.jpg"
+				totalSubImgFiles = totalSubImgFiles + 1
+				totalFileSize = totalSubImgFiles*(0.002)
+			#print(str(totalSubImgFiles)+" "+str(i)+" "+fileName+ " ===> %5.2f"%(totalFileSize))
+				print(str(totalSubImgFiles)+"    "+str(idx)+ " ===> %5.2f"%(totalFileSize))
+				cv2.imwrite(pathToSave_NB+fileName, subImgRGB)
+				idx = idx + 1
 
 
 
