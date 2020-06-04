@@ -103,7 +103,7 @@ for fileIdx in range (NAnnFiles):
 	def getSubImgRGB(img, fSz, ic, jc):
 		f2 = fSz //2
 		subImgRGB = np.zeros([fSz,fSz,3], dtype = np.uint8)
-		subImgRGB = img[(ic-f2):(ic+f2-1), (jc-f2):(jc+f2-1), :]
+		subImgRGB = img[(ic-f2):(ic+f2), (jc-f2):(jc+f2), :]
 
 		return subImgRGB
 
