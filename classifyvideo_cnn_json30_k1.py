@@ -30,7 +30,7 @@ rN = int(scaleRatio*N)
 from keras.models import load_model
 from keras.preprocessing import image
 
-kfold = "_fold1"
+kfold = "_fold4"
 
 rootPath   = "C:\\Users\\INKOM06\\Pictures\\roadDataset\\bandung\\Purbaleunyi_Highway_1\\ds\\"
 modelPath  = rootPath+kfold+"\\xmodel\\"

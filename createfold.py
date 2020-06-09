@@ -3,7 +3,7 @@ rootFolder = "C:\\Users\\INKOM06\\Pictures\\roadDataset\\bandung\\dataset\\"
 rootFolder = "C:\\Users\\INKOM06\\Pictures\\roadDataset\\bandung\\Purbaleunyi_Highway_1\\ds\\"
 
 
-for idxFold in range(3):
+for idxFold in range(4,5,1):
 	foldNo = "_fold"+str(idxFold+1)+"\\"
 	subDataSet =  ["train", "valid", "test"]
 	classFolder = ["_B", "_NB"]

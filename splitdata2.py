@@ -3,7 +3,7 @@ import cv2
 import numpy as np
 os.system("cls")
 
-kfold = "_fold3"
+kfold = "_fold4"
 NforDataset = 8000
 rootPath = "C:\\Users\\INKOM06\\Pictures\\roadDataset\\bandung\\Purbaleunyi_Highway_1\\ds\\"
 
