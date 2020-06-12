@@ -5,8 +5,8 @@ import os
 
 os.system("cls")
 
-path = "C:\\Users\\INKOM06\\Pictures\\roadDataset\\california\\"
-videoFile = "california1.mp4"
+path = "C:\\Users\\INKOM06\\Pictures\\roadDataset\\oregon_us\\"
+videoFile = "oreclip.mp4"
 
 cap = cv2.VideoCapture(path+videoFile)
 
@@ -69,7 +69,7 @@ while(True) and (frameIdx<(totalFrames-1)):
     cv2.imshow('Far sides',finMerge2b)
 
 
-    ret, Bbw = cv2.threshold(B_Near,230,255,cv2.THRESH_BINARY)
+    ret, Bbw = cv2.threshold(B_Near,150,255,cv2.THRESH_BINARY)
     ret, Sbw = cv2.threshold(S_Near,230,255,cv2.THRESH_BINARY)
 
     Smask = cv2.inRange(S_Near, 80, 150)
