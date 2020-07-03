@@ -1,3 +1,5 @@
+#Note: This program is used to create sub folders for training stages
+
 import os
 rootFolder = "C:\\Users\\INKOM06\\Pictures\\roadDataset\\bandung\\dataset\\"
 rootFolder = "C:\\Users\\INKOM06\\Pictures\\roadDataset\\bandung\\Purbaleunyi_Highway_1\\ds\\"
