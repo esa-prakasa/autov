@@ -1,3 +1,4 @@
+# augmented the images
 import os
 import cv2
 # example of horizontal shift image augmentation
