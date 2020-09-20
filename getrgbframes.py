@@ -8,7 +8,8 @@ import os
 path = "C:\\Users\\INKOM06\\Pictures\\roadDataset\\"
 path0 = "C:\\Users\\INKOM06\\Pictures\\roadDataset\\oregon_us\\"
 
-videoFile = "oreclip.mp4"
+#videoFile = "oreclip.mp4"
+videoFile = "oregon.mp4"
 
 cap = cv2.VideoCapture(path0+videoFile)
 
@@ -21,7 +22,7 @@ ratio = 0.3
 
 
 '''
-while(True) and (frameIdx<1000):
+while(True) and (frameIdx<10000):
     
    
 
@@ -42,7 +43,8 @@ while(True) and (frameIdx<1000):
     cv2.imshow("RGB",frame)
 
 
-    cv2.imwrite(path0+"rgb\\"+fileName,frame)
+    #cv2.imwrite(path0+"rgb\\"+fileName,frame)
+    cv2.imwrite(path0+"rgbfull\\"+fileName,frame)
 
     frameIdx = frameIdx + 1
     

@@ -1,5 +1,8 @@
 import os
 import cv2
+import pandas as pd
+
+
 
 imgPath = r'C:\Users\INKOM06\Pictures\roadDataset\oregon_us\rgb'
 imgFiles = os.listdir(imgPath)
@@ -30,6 +33,8 @@ for i in range(M):
 		print("%f  %f  %f  %f  %f"%(i/M,j/N,img[i,j,2]/255,img[i,j,1]/255,img[i,j,0]/255))
 
 
+
+## output this part is X in DataFrame
 
 
 
