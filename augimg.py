@@ -1,4 +1,4 @@
-# augmented the images
+# augmented the images to vary the dataset.
 import os
 import cv2
 # example of horizontal shift image augmentation
