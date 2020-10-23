@@ -1,4 +1,7 @@
 # augmented the images to vary the dataset.
+# This augmentation aims to increase the datset size.
+
+
 import os
 import cv2
 # example of horizontal shift image augmentation
