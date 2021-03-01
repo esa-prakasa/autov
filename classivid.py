@@ -72,7 +72,7 @@ model.load_weights(hdfPath)
 #path0 = "C:\\Users\\INKOM06\\Pictures\\_DATASET\\_CIBISurvey2\\1202_start\\"
 path0 = "C:\\Users\\INKOM06\\Pictures\\_DATASET\\_CIBISurvey2\\1202_start\\test\\"
 #videoFile = "oreclip.mp4"
-videoFile = "csc3.mp4"
+videoFile = "csc4.mp4"
 #videoFile = "oregon.mp4"
 
 #path0 = "C:\\Users\\INKOM06\\Pictures\\roadDataset\\california\\"
