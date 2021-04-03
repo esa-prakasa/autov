@@ -1,4 +1,5 @@
 ## codes: https://github.com/bnsreenu/python_for_microscopists/blob/master/076-077-078-Unet_nuclei_tutorial.py
+## this code aims to segment cell areas
 
 import os
 import numpy as np 
