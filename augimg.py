@@ -52,5 +52,5 @@ for idx in range(len(srcFiles)):
 		fileName = tgtFiles[idx]+"_"+idxS+".jpg"
 		pathToSave = tgtFolder+fileName
 		print(pathToSave)
-		cv2.imwrite(pathToSave, image)
+		cv2.imwrite(pathToSave, image) 
 
