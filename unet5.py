@@ -1,5 +1,7 @@
 ## codes: https://github.com/bnsreenu/python_for_microscopists/blob/master/076-077-078-Unet_nuclei_tutorial.py
+## Unet 4 is used to segment road area from the CSC road frame
 
+import time
 import os
 import numpy as np 
 import cv2
@@ -13,14 +15,15 @@ from tqdm import tqdm
 import matplotlib.pyplot as plt
 
 
+start = time.time()
+
 IMG_WIDTH = 256
 IMG_HEIGHT = 256
 IMG_CHANNELS = 3
 n_classes = 2
 
-TRAIN_PATH = r'C:\Users\INKOM06\Pictures\_DATASET\Unet\stage0_train'
-#TEST_PATH = r'C:\Users\INKOM06\Pictures\_DATASET\Unet\stage1_test'
-TEST_PATH = r'C:\Users\INKOM06\Pictures\_DATASET\Unet\stage0_test'
+TRAIN_PATH = r'C:\Users\INKOM06\Pictures\roadDataset\pusbin1130segment\train'
+TEST_PATH = r'C:\Users\INKOM06\Pictures\roadDataset\pusbin1130segment\test'
 
 train_ids = next(os.walk(TRAIN_PATH))[1]
 test_ids = next(os.walk(TEST_PATH))[1]
@@ -49,8 +52,8 @@ for n, id_ in tqdm(enumerate(train_ids), total=len(train_ids)):
     idx = idx + 1
     
     idy = 0
-    for mask_file in next(os.walk(path+'\\masks'))[2]:
-        maskPath = os.path.join(path,'masks',mask_file)
+    for mask_file in next(os.walk(path+'\\mask'))[2]:
+        maskPath = os.path.join(path,'mask',mask_file)
         mask_ = cv2.imread(maskPath)
         mask_ = cv2.resize(mask_,(IMG_WIDTH, IMG_HEIGHT) , interpolation = cv2.INTER_AREA)
         mask_ = cv2.cvtColor(mask_, cv2.COLOR_BGR2GRAY)
@@ -86,13 +89,8 @@ for n, id_ in tqdm(enumerate(test_ids), total=len(test_ids)):
 
 print('Done!')
 
+print(sizes_test)
 
-
-#image_x = random.randint(0, len(train_ids))
-#cv2.imshow("X_train",X_train[image_x])
-#plt.show()
-#cv2.imshow("Y_train",np.squeeze(Y_train[image_x]))
-#plt.show()
 
 
 
@@ -129,7 +127,7 @@ p4 = keras.layers.MaxPooling2D(pool_size=(2, 2))(c4)
 c5 = keras.layers.Conv2D(256, (3, 3), activation='relu', kernel_initializer='he_normal', padding='same')(p4)
 c5 = keras.layers.Dropout(0.3)(c5)
 c5 = keras.layers.Conv2D(256, (3, 3), activation='relu', kernel_initializer='he_normal', padding='same')(c5)
-    
+  
 #Expansive path 
 u6 = keras.layers.Conv2DTranspose(128, (2, 2), strides=(2, 2), padding='same')(c5)
 u6 = keras.layers.concatenate([u6, c4])
@@ -189,14 +187,40 @@ modelRd.summary()
 
 ################################
 #Modelcheckpoint
-modelPath = r'C:\Users\INKOM06\Pictures\_DATASET\Unet\model'
-checkpointer = keras.callbacks.ModelCheckpoint(os.path.join(modelPath,'model_for_nuclei.h5'), verbose=1, save_best_only=True)
+modelPath = r'C:\Users\INKOM06\Pictures\_DATASET\Unet\model4'
+checkpointer = keras.callbacks.ModelCheckpoint(os.path.join(modelPath,'model_for_nuclei.h5'), verbose=1, 
+    save_best_only=True)
 
 callbacks = [
         keras.callbacks.EarlyStopping(patience=2, monitor='val_loss'),
         keras.callbacks.TensorBoard(log_dir='logs')]
 
-results = modelRd.fit(X_train, Y_train, validation_split=0.1, batch_size=16, epochs=50, callbacks=callbacks)
+
+
+
+
+results = modelRd.fit(X_train, Y_train, validation_split=0.2, batch_size=16, epochs=5, callbacks=callbacks)
+
+
+
+
+modelJsonFileNm = "unetarchi.json"
+modelH5FileNm = "unetarchi.h5"
+modelBestNm = "theBestModelOfUnet.hdf5"
+
+
+model_json = modelRd.to_json()
+
+with open(os.path.join(r'C:\Users\INKOM06\Pictures\roadDataset\pusbin1130segment\_json4',modelJsonFileNm), "w") as json_file:
+    json_file.write(model_json)
+
+modelRd.save_weights(os.path.join(r'C:\Users\INKOM06\Pictures\roadDataset\pusbin1130segment\_json4',modelH5FileNm))
+print("Saved model to disk")
+
+
+
+
+
 
 ####################################
 
@@ -210,7 +234,7 @@ preds_test  = modelRd.predict(X_test, verbose=1)
 
 preds_train_t = (preds_train > 0.5).astype(np.uint8)
 preds_val_t   = (preds_val > 0.5).astype(np.uint8)
-preds_test_t  = (preds_test < 0.3).astype(np.uint8)
+preds_test_t  = (preds_test > 0.5).astype(np.uint8)
 
 print(type(preds_test))
 print(preds_test.shape)
@@ -223,9 +247,9 @@ imTest = np.zeros((IMG_WIDTH,IMG_HEIGHT,3),dtype=np.uint8)
 imgIdx = 2
 
 
-pathToSave = r'C:\Users\INKOM06\Pictures\_DATASET\Unet\result'
+pathToSave = r'C:\Users\INKOM06\Pictures\roadDataset\pusbin1130segment\result4'
 
-for imgIdx in range(10):
+for imgIdx in range(30):
 
     for i in range(IMG_HEIGHT):
         for j in range(IMG_WIDTH):
@@ -239,8 +263,26 @@ for imgIdx in range(10):
     resultFileName = str(imgIdx)+'.png'
     fullPathToSave = os.path.join(pathToSave,resultFileName) 
     print(fullPathToSave)
-    cv2.imwrite(fullPathToSave,imr)
 
+
+    widthOri = sizes_test[imgIdx][1]
+    heightOri = sizes_test[imgIdx][0]
+
+    imr2 = cv2.resize(imr,(widthOri, heightOri) , interpolation = cv2.INTER_AREA)
+
+    cv2.imwrite(fullPathToSave,imr2)
+
+
+
+
+end = time.time()
+
+# total time taken
+
+durSec = end - start
+durMin = durSec/60
+print(f"Runtime of the program is {durSec} second")
+print(f"Runtime of the program is {durMin} minute")
 
 
 

@@ -30,11 +30,9 @@ for folderName in imgList:
 	print(folderName)
 	if not os.path.exists(folderName):
 		os.makedirs(folderName)
-'''
-
 
 # create sub folder images and mask
-'''
+
 folderList =os.listdir(trainPath)
 print(folderList)
 
@@ -46,7 +44,9 @@ for folderName in folderList:
 		os.makedirs('images')
 	if not os.path.exists('mask'):
 		os.makedirs('mask')
+
 '''
+
 
 folderList =os.listdir(trainPath)
 N = len(folderList)
@@ -63,7 +63,7 @@ for i in range (N):
 
 
 folderList =os.listdir(trainPath)
-for i in range(2) :#range(len(folderList)):
+for i in range(len(folderList)):
 	img = cv2.imread(os.path.join(imgPath,imgList[i]))
 	mask = cv2.imread(os.path.join(maskPath,maskList[i]))
 
@@ -77,3 +77,6 @@ for i in range(2) :#range(len(folderList)):
 
 	print(imgTargetPath+" has been saved")	
 	print(maskTargetPath+" has been saved")
+
+
+
