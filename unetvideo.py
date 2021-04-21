@@ -49,7 +49,7 @@ n_classes = 2
 
 
 frameIdx = 0
-ratio = 0.2
+#ratio = 0.2
 ret, frame = cap.read()
 M = frame.shape[0]
 N = frame.shape[1]
@@ -69,112 +69,70 @@ if saveVideo == True:
     out = cv2.VideoWriter(videoPathToSave,cv2.VideoWriter_fourcc('M','J','P','G'), 30, (N,M))
 
 
-fileNameToSave ="output.jpg"
-filePathToSave = os.path.join(videoPath, fileNameToSave)
+#fileNameToSave ="output.jpg"
+#filePathToSave = os.path.join(videoPath, fileNameToSave)
 #cv2.imwrite(filePathToSave, frame)
 
 
 
-frame2 = cv2.resize(frame,(IMG_WIDTH, IMG_HEIGHT) , interpolation = cv2.INTER_AREA)
+#>> frame2 = cv2.resize(frame,(IMG_WIDTH, IMG_HEIGHT) , interpolation = cv2.INTER_AREA)
 
 
-X_test = np.zeros((1, IMG_HEIGHT, IMG_WIDTH, IMG_CHANNELS), dtype=np.uint8)
-X_test[0] = frame2
+#X_test = np.zeros((1, IMG_HEIGHT, IMG_WIDTH, IMG_CHANNELS), dtype=np.uint8)
+#X_test[0] = frame2
 
-preds  = modelRd.predict(X_test, verbose=1)
+#preds  = modelRd.predict(X_test, verbose=1)
 
-print(preds)
+#print(preds)
 
-preds_t  = (preds > 0.5).astype(np.uint8)
+#preds_t  = (preds > 0.5).astype(np.uint8)
 
-imr = np.zeros((IMG_WIDTH,IMG_HEIGHT),dtype=np.uint8)
+#imr = np.zeros((IMG_WIDTH,IMG_HEIGHT),dtype=np.uint8)
 
-for i in range(IMG_HEIGHT):
-    for j in range(IMG_WIDTH):
-        imr[i,j] = int(preds_t[0,i,j]*255)
+#for i in range(IMG_HEIGHT):
+#    for j in range(IMG_WIDTH):
+#        imr[i,j] = int(preds_t[0,i,j]*255)
 
-imr2 = cv2.resize(imr,(widthOri, heightOri) , interpolation = cv2.INTER_AREA)
+#imr2 = cv2.resize(imr,(widthOri, heightOri) , interpolation = cv2.INTER_AREA)
 
-cv2.imwrite(filePathToSave, imr2)
-
-
-
+#cv2.imwrite(filePathToSave, imr2)
 
 
 
-
-
-
-
-
-
-
-'''
-while(True) and (frameIdx<(totalFrames-1)):
+#while(True) and (frameIdx<(totalFrames-1)):
+while(True) and (frameIdx<10):
 
     ret, frame = cap.read()
 
     frame = cv2.resize(frame, (Nr,Mr),interpolation = cv2.INTER_AREA)
     #frame2 = np.zeros((Mr,Nr,3), dtype = np.uint8)
-    frame2 = frame
-
     M = frame.shape[0]
     N = frame.shape[1]
 
-    imgBin = np.zeros((M,N), dtype = np.uint8)
+    heightOri = M
+    widthOri = N
 
-    iN = 0
-    for i in range(0,M,sampPixRow):
-        jMin = N
-        jMax = 0
-        idxJ = 0
-        for j in range(0,N,sampPixCol):
+    frame2 = cv2.resize(frame,(IMG_WIDTH, IMG_HEIGHT) , interpolation = cv2.INTER_AREA)
 
-            iNorm = i/M - 0.5
-            jNorm = j/N - 0.5
-            rNorm = float(frame[i,j,2]/255) - 0.5
-            gNorm = float(frame[i,j,1]/255) - 0.5
-            bNorm = float(frame[i,j,0]/255) - 0.5
+    X_test = np.zeros((1, IMG_HEIGHT, IMG_WIDTH, IMG_CHANNELS), dtype=np.uint8)
+    X_test[0] = frame2
 
-            classVal = classify(iNorm, jNorm, rNorm, gNorm, bNorm)
-            imgBin[i,j] = classVal
+    preds  = modelRd.predict(X_test, verbose=1)
 
-            if classVal==255:
-                frame2[i,j,2] = 255   
-                frame2[i,j,1] = 255   
-                frame2[i,j,0] = 0
-                if j<jMin:
-                    jMin = j
-                if j>jMax:
-                    jMax = j
-        
-        if ((jMin !=N) & (jMax != 0)):
-            #print("i: %d    jMin: %d   jMax: %d "%(i,jMin,jMax))
+    #print(preds)
+
+    preds_t  = (preds > 0.5).astype(np.uint8)
+
+    imr = np.zeros((IMG_WIDTH,IMG_HEIGHT),dtype=np.uint8)
+
+    for i in range(IMG_HEIGHT):
+        for j in range(IMG_WIDTH):
+            imr[i,j] = int(preds_t[0,i,j]*255)
+
+    imr2 = cv2.resize(imr,(widthOri, heightOri) , interpolation = cv2.INTER_AREA)
 
 
-            if (iN == 0):
-                start_point = (jMin,i)
-                start_point2 = (jMax,i)
-
-            if ((iN>0)&(jMin != 0)):
-                end_point = (jMin,i)
-                frame2 = cv2.line(frame2, start_point, end_point, color, thickness)
-                start_point = end_point                 
-
-
-            if ((iN>0)&(jMax != N)):
-                end_point2 = (jMax,i)
-                frame2 = cv2.line(frame2, start_point2, end_point2, color2, thickness)
-                start_point2 = end_point2                 
-
-
-            iN = iN + 1
-
-
-
-
-
-    frame3 = cv2.resize(frame2, (Nv,Mv))
+    frame3 = imr2 #cv2.resize(frame2, (Nv,Mv))
     print("Frame index: %d  of Total Frames: %d" %(frameIdx, totalFrames))
 
     if saveVideo == True:
@@ -183,6 +141,6 @@ while(True) and (frameIdx<(totalFrames-1)):
     frameIdx = frameIdx + 1
     
 
-'''
+
 cap.release()
 out.release()
