@@ -1,4 +1,4 @@
-# average test 
+# average test code
 import numpy as np 
 import cv2
 
