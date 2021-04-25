@@ -1,4 +1,4 @@
-# This file is used to check the original and labelled data
+# This file is used to check the original and labelled data 
 
 import cv2
 import os
