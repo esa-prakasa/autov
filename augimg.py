@@ -1,7 +1,5 @@
 # augmented the images to vary the dataset.
 # This augmentation aims to increase the datset size by applying several variations.
-#
-
 
 import os
 import cv2
