@@ -8,9 +8,25 @@ from sklearn.metrics import classification_report
 
 os.system('cls')
 
-rootPath = r'C:\Users\Esa\Pictures\_DATASET\unetpusbin\topCamSegmented\kFoldFolders\D3'   ## fold1 Train: D0-D1-D2  Test: D3
+
+### ================= Fold 0 ================
+#rootPath = r'C:\Users\Esa\Pictures\_DATASET\unetpusbin\topCamSegmented\kFoldFolders\D3'   ## fold0 Train: D0-D1-D2  Test: D3
 #resPath = r'C:\Users\Esa\Pictures\_DATASET\unetpusbin\result_fold0'
-resPath = r'C:\Users\Esa\Pictures\_DATASET\unetpusbin\result_fold0B'
+#resPath = r'C:\Users\Esa\Pictures\_DATASET\unetpusbin\result_fold0B'
+
+### ================= Fold 1 ================
+#rootPath = r'C:\Users\Esa\Pictures\_DATASET\unetpusbin\topCamSegmented\kFoldFolders\D0'   ## fold1 Train: D1-D2-D3  Test: D0
+#resPath = r'C:\Users\Esa\Pictures\_DATASET\unetpusbin\result_fold1'
+
+
+### ================= Fold 2 ================
+#rootPath = r'C:\Users\Esa\Pictures\_DATASET\unetpusbin\topCamSegmented\kFoldFolders\D1'   ## fold1 Train: D0-D2-D3  Test: D1
+#resPath = r'C:\Users\Esa\Pictures\_DATASET\unetpusbin\result_fold2'
+
+### ================= Fold 2 ================
+rootPath = r'C:\Users\Esa\Pictures\_DATASET\unetpusbin\topCamSegmented\kFoldFolders\D2'   ## fold1 Train: D0-D1-D3  Test: D2
+resPath = r'C:\Users\Esa\Pictures\_DATASET\unetpusbin\result_fold3'
+
 
 
 folderNames = os.listdir(rootPath)
@@ -20,7 +36,11 @@ NTest = len(os.listdir(resPath))
 
 
 print("No FileName        tp       fn   fp    tn      acc    pre   rec   f1s")
-f = open(r"C:\Users\Esa\Pictures\_DATASET\unetpusbin\cmatrec\fold0.txt", "w")
+#f = open(r"C:\Users\Esa\Pictures\_DATASET\unetpusbin\cmatrec\fold0.txt", "w")   #fold0
+#f = open(r"C:\Users\Esa\Pictures\_DATASET\unetpusbin\cmatrec\fold1.txt", "w")   #fold1
+#f = open(r"C:\Users\Esa\Pictures\_DATASET\unetpusbin\cmatrec\fold2.txt", "w")   #fold2
+f = open(r"C:\Users\Esa\Pictures\_DATASET\unetpusbin\cmatrec\fold3.txt", "w")   #fold3
+
 for idx in range(NTest):
 	fullPath0 = rootPath+"\\"+folderNames[idx]+"\\mask\\" #_mask.png"
 	maskFiles = os.listdir(fullPath0)
@@ -68,7 +88,7 @@ for idx in range(NTest):
 
 
 #	print("No FileName        tp       fn   fp    tn      acc    pre   rec   f1s")
-	resultText = ("%d %s %d %d %d %d %3.2f %3.2f %3.2f %3.2f \n"%(idx, folderNames[idx],tp, fn, fp, tn, acc, pre, rec, f1s))
+	resultText = ("%d %s %d %d %d %d %3.3f %3.3f %3.3f %3.3f \n"%(idx, folderNames[idx],tp, fn, fp, tn, acc, pre, rec, f1s))
 	print(resultText)
 	f.write(resultText)
 
