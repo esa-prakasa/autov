@@ -44,11 +44,15 @@ N = img.shape[1]
 
 ratio =0.3
 
+
 img = cv2.resize(img, (round(ratio*N),round(ratio*M)), interpolation = cv2.INTER_AREA)
 bwImg = cv2.resize(bwImg, (round(ratio*N),round(ratio*M)), interpolation = cv2.INTER_AREA)
 
-cv2.imshow("RGB",img)
-cv2.imshow("BW",bwImg)
+finalImg = np.hstack((img,bwImg))
+
+#cv2.imshow("RGB",img)
+#cv2.imshow("BW",bwImg)
+cv2.imshow("RGB and Reference Image", finalImg)
 
 
 cv2.waitKey(0)
