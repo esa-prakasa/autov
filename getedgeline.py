@@ -19,13 +19,6 @@ bwImg = np.zeros((M, N, 3), np.uint8)
 with open(jsonPath) as json_file:
 	data = json.load(json_file)
 
-edge1 = data['objects'][1]['points']['exterior']
-edge2 = data['objects'][2]['points']['exterior']
-
-print(edge1)
-print(edge2)
-
-
 for kEdge in range(1,3,1):
 	edge = data['objects'][kEdge]['points']['exterior']
 	N1 = len(edge)
