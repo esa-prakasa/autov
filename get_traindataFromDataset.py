@@ -7,9 +7,9 @@ start_time = time.time()
 
 os.system("cls")
 
-bwPath = r'C:\Users\INKOM06\Pictures\roadDataset\CSC1202T\bw'
-colPath = r'C:\Users\INKOM06\Pictures\roadDataset\CSC1202T\img'
-savePath = r'C:\Users\INKOM06\Pictures\roadDataset\CSC1202T\_csv'
+bwPath = r'C:\Users\Esa\Pictures\_DATASET\pusbin\bw'
+colPath = r'C:\Users\Esa\Pictures\_DATASET\pusbin\img'
+savePath = r'C:\Users\Esa\Pictures\_DATASET\pusbin\_csv'
 
 bwList  = os.listdir(bwPath)
 colList = os.listdir(colPath)

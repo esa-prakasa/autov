@@ -9,7 +9,7 @@ os.system('cls')
 
 #csvPath = r'C:\Users\INKOM06\Pictures\roadDataset\oregon_us\roads_annotated\ds\_csv'
 
-csvPath = r'C:\Users\INKOM06\Pictures\roadDataset\CSC1202T\_csv'
+csvPath = r'C:\Users\Esa\Pictures\_DATASET\pusbin\_csv'
 
 csvFiles = os.listdir(csvPath)
 csvIdx = 0
@@ -115,11 +115,11 @@ history = classifier.fit(X_train, y_train,
 model_json = classifier.to_json()
 
 #with open("C:\\Users\\INKOM06\\Pictures\\roadDataset\\oregon_us\\roads_annotated\\ds\\_json\\"+modelJsonFileNm, "w") as json_file:
-with open("C:\\Users\\INKOM06\\Pictures\\roadDataset\\CSC1202T\\_json\\"+modelJsonFileNm, "w") as json_file:
+with open("C:\\Users\\Esa\\Pictures\\_DATASET\\pusbin\\_json\\"+modelJsonFileNm, "w") as json_file:
     json_file.write(model_json)
 # serialize weights to HDF5
 #classifier.save_weights("C:\\Users\\INKOM06\\Pictures\\roadDataset\\oregon_us\\roads_annotated\\ds\\_json\\"+modelH5FileNm)
-classifier.save_weights("C:\\Users\\INKOM06\\Pictures\\roadDataset\\CSC1202T\\_json\\"+modelH5FileNm)
+classifier.save_weights("C:\\Users\\Esa\\Pictures\\_DATASET\\pusbin\\_json\\"+modelH5FileNm)
 print("Saved model to disk")
 
 print(history.history.keys())

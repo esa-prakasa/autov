@@ -49,7 +49,7 @@ os.system("cls")
 path = r"C:\Users\Esa\Pictures\_DATASET\unetpusbin\result_fold1"
 files = os.listdir(path)
 
-idx = 400
+idx = 1000
 img = cv2.imread(os.path.join(path,files[idx]))
 img2 = img
 
@@ -86,7 +86,7 @@ for i in range(0,(M-rowDivSpace),rowDivSpace):
 		err = abs (0.5 - abs(bordStat)/255)
 
 #		if (bordStat>=102) and (bordStat<=153):
-		if (err<=0.05):
+		if (err<=0.08):
 			#print(bordStat)
 			print("%d %d"%(i,j))
 			img2 = makeDot(img2, i, j)

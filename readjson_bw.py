@@ -5,9 +5,8 @@ import cv2
 
 os.system("cls")
 
-path0 = "C:\\Users\\INKOM06\\Pictures\\roadDataset\\oregon_us\\"
 
-path0 = "C:\\Users\\INKOM06\\Pictures\\roadDataset\\CSC1202T\\"#ann
+path0 = "C:\\Users\\Esa\\Pictures\\_DATASET\\pusbin\\"#ann
 jsonPath = path0+"ann\\"#roads_annotated\\ds\\ann\\"
 bwPath =   path0+"bw\\"#roads_annotated\\ds\\bw\\"
 rgbPath =  path0+"img\\"#roads_annotated\\ds\\img\\"

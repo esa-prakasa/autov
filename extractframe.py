@@ -5,20 +5,17 @@ import os
 
 os.system("cls")
 
-#path = "C:\\Users\\INKOM06\\Pictures\\handwash\\mod1\\"
-
-#path =r"C:\Users\INKOM06\Pictures\_DATASET\roadcibi"
-path = r"C:\Users\INKOM06\Pictures\_DATASET\_CIBISurvey2\1202_start"
-pathToSave = r"C:\Users\INKOM06\Pictures\_DATASET\_CIBISurvey2\_1202Tsp30frm"
+path = r"C:\Users\Esa\Pictures\_DATASET\pusbin\srcvideos"
+pathToSave = r"C:\Users\Esa\Pictures\_DATASET\pusbin\img"
 
 files = os.listdir(path)
-fileIdx = 4
+fileIdx = 0
 
 cap = cv2.VideoCapture(os.path.join(path,files[fileIdx]))
 
 totalFrames = cap.get(cv2.CAP_PROP_FRAME_COUNT)
 print(totalFrames)
-ratio = 0.5
+ratio = 1
 
 frameIdx = 0
 while(True):
