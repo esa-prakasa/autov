@@ -1,90 +1,58 @@
+## Right side detection
+
 import cv2
 import os
 import numpy as np
 import matplotlib.pyplot as plt  
 
-
-
 def isBorder(img,iCent,jCent,fSz):
-
 	fSz2 = fSz//2
-
 	sumPix = float(0)
-
 	for i in range(-fSz2,(fSz2+1),1):
 		for j in range(-fSz2,(fSz2+1),1):
 			sumPix = sumPix + float(img[iCent+i, jCent+j][0])
 
-	bordVal = sumPix/(fSz*fSz)
-
-#	print(bordVal)
-#	print("%d %d :  %3.3f"%(iCent,jCent,bordVal))
-	bordStat = bordVal
-
-
+	bordVal = float(sumPix/(fSz*fSz))
+	bordStat = 0
+	if (bordVal > 0) and (bordVal<127):
+		bordStat = 1
+	
 	return bordStat
 
 
-def makeDot(img,i,j):
-
+def makeDot(img,i,j,dotOpt):
+	if dotOpt==1:
+		bordLineColor = [0,0,255]
+		filledColor   = [255,100,255]
+	if dotOpt==2:
+		bordLineColor = [255,10,10]
+		filledColor   = [255,255,0]
+	
 	delta = 11
 	deltaMin1 = -(delta-1)
 	for k in range(deltaMin1,delta,1):
 		for l in range(deltaMin1,delta,1):
-			img[(i+k),(j+l),0] = 0
-			img[(i+k),(j+l),1] = 0
-			img[(i+k),(j+l),2] = 255
-
+			img[(i+k),(j+l),0:3] = bordLineColor[0:3]
 
 	delta = 7
 	deltaMin1 = -(delta-1)
 	for k in range(deltaMin1,delta,1):
 		for l in range(deltaMin1,delta,1):
-			img[(i+k),(j+l),0] = 0
-			img[(i+k),(j+l),1] = 255
-			img[(i+k),(j+l),2] = 255
-
-
+			img[(i+k),(j+l),0:3] = filledColor[0:3]
 	return img
-
-
-def makeDot2(img,i,j):
-
-	delta = 11
-	deltaMin1 = -(delta-1)
-	for k in range(deltaMin1,delta,1):
-		for l in range(deltaMin1,delta,1):
-			img[(i+k),(j+l),0] = 0
-			img[(i+k),(j+l),1] = 255
-			img[(i+k),(j+l),2] = 0
-
-
-	delta = 7
-	deltaMin1 = -(delta-1)
-	for k in range(deltaMin1,delta,1):
-		for l in range(deltaMin1,delta,1):
-			img[(i+k),(j+l),0] = 0
-			img[(i+k),(j+l),1] = 255
-			img[(i+k),(j+l),2] = 255
-
-
-	return img
-
-
 
 
 def drawAPolyLine(iLeft, jLeft, img, linePost):
 	y = np.array(iLeft, float)
 	x = np.array(jLeft, float)
 
-#	fit = np.polyfit(x, y, 2)
-	fit = np.polyfit(x, y, 3)
+	fit = np.polyfit(x, y, 2)
+
 	a = fit[0]
 	b = fit[1]
 	c = fit[2]
-	d = fit[3]
-#	fit_equation = a * np.square(x) + b * x + c
-	fit_equation = a * np.square(x)*x + b * np.square(x) + c*x + d
+
+	fit_equation = a * np.square(x) + b * x + c
 
 	N = img.shape[1]
 
@@ -103,7 +71,7 @@ def drawAPolyLine(iLeft, jLeft, img, linePost):
 
 	yFit =[]
 	for xP in xIn:
-		yVal = a*xP*xP*xP + b*xP*xP + c*xP + d
+		yVal = a*xP*xP + b*xP + c
 		yFit.append(yVal)
 	#print(yFit)
 	#print(type(yFit))
@@ -114,9 +82,9 @@ def drawAPolyLine(iLeft, jLeft, img, linePost):
 	lineThickness = 3
 
 	for i in range(NFit-2):
-		#print("i  %d"%(i))
 		start_point = (int(xIn[i]), int(yFit[i])) 
 		end_point = (int(xIn[i+1]), int(yFit[i+1]))
+
 		img = cv2.line(img, start_point, end_point, lineColor, lineThickness)
 	
 	return img
@@ -128,15 +96,29 @@ os.system("cls")
 path = r"C:\Users\Esa\Pictures\_DATASET\unetpusbin\result_fold1"
 files = os.listdir(path)
 
-#NFilesMax = len(files)
-#idx = int(input("NFilesMax  %d "%(NFilesMax)))
-idx = 10
+idx = 350
 
 img = cv2.imread(os.path.join(path,files[idx]))
 img2 = img
 
 M = img.shape[0]
 N = img.shape[1]
+
+iR = 0
+sumRow = 0
+lastSumRow = sumRow
+while lastSumRow <= 0:
+	for j in range(N):
+		sumRow = sumRow + float(img[iR,j,0])
+	iR = iR +1
+	print("%d  %4.2f"%(iR, sumRow))
+	lastSumRow = sumRow
+	sumRow = 0
+	
+Mmin = iR - 1
+
+
+
 
 #print("%d %d"%(M,N))
 #print("--------------------------")
@@ -162,48 +144,49 @@ jRight =[]
 
 thisRow = 0
 
-bordRatioTh = 0.3
-errThr = 0.1
+bordRatioTh = 0.5
+errThr = 0.3
 
-for i in range((M//5),(M-rowDivSpace),rowDivSpace):
+color2 = (0, 0, 255) # BGR format
+
+#cv2.imshow("Original Image", img)
+
+Mmax = int(0.7*M)
+
+
+for i in range(Mmin,Mmax,rowDivSpace):
 	start_point = (0,i)
 	end_point = (N,i)
-	color2 = (0, 0, 255) # BGR format
+	img2 = cv2.line(img2, start_point, end_point, color2, thickness)
+
+
+
+for i in range(Mmin,Mmax,rowDivSpace):
 	thisRow = 0
-	for j in range(0,(N//3),1):
+	for j in range(0,(int(0.8*N)),1):
 		bordStat = isBorder(img,i,j,5)
-		#print("i : %d  j : %d   %3.4f "%(i,j,bordStat))
-		err = abs (bordRatioTh - abs(bordStat)/255)
-		
-		j2 = (N-1-5) - j
-		bordStat2 = isBorder(img,i,j2,5)
-		err2 = abs(bordRatioTh -abs(bordStat2/255)) 
-
-		
-
-#		if (bordStat>=102) and (bordStat<=153):
-		if (err<=errThr) and (j>1) and (j<(N//3)) and (thisRow==0):
-			#print("iLeft  %d %d"%(i,j))
-			img2 = makeDot(img2, i, j)
+        
+		if (bordStat==1) and (thisRow==0) and (j>20) and (j<(N//2)):
+			
+			img2 = makeDot(img2, i, j,1)
 			iLeft.append(i)
 			jLeft.append(j)
 			thisRow = 1
+
+
+
+for i in range(Mmin,Mmax,rowDivSpace):
+	thisRow = 0
+	for j in range(0,(int(0.8*N)),1):
+		j2 = N - 10 - j
+		bordStat = isBorder(img,i,j2,5)
         
-		if (err2<errThr) and (j2>(2*N//3)) and (j<N)and (thisRow==0):
-			img2 = makeDot2(img2, i, j2)
-			iRight.append(i)
-			jRight.append(j2)
+		if (bordStat==1) and (thisRow==0) and (j2>(N//2)) and (j2<N):
+			
+			img2 = makeDot(img2, i, j2,2)
+			iLeft.append(i)
+			jLeft.append(j2)
 			thisRow = 1
-        
-
-
-
-#		print("%d %d  %4.3f"%(i,j,bordStat))
-
-
-
-
-	img = cv2.line(img, start_point, end_point, color2, thickness)
 
 
 
@@ -211,23 +194,18 @@ for i in range((M//5),(M-rowDivSpace),rowDivSpace):
 
 #print("--------------------------")
 N = len(iLeft)
-#for i in range(N):
-	#print("%d %d "%(iLeft[i],jLeft[i]))
-
+print(N)
+for i in range(N):
+	print("i: %d  j: %d "%(iLeft[i], jLeft[i]))
 
 
 img2 = drawAPolyLine(iLeft, jLeft,img2,0)
-img2 = drawAPolyLine(iRight, jRight,img2,1)
-
-
-
-
 
 
 cv2.imshow("["+str(idx)+"] --- (2)"+files[idx], img2)
 
 
-print("Done!")
+print("Done! getcontourBothDirc3.py")
 
 cv2.waitKey(0)
 cv2.destroyAllWindows()

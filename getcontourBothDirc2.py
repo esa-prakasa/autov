@@ -55,8 +55,8 @@ def makeDot2(img,i,j):
 	for k in range(deltaMin1,delta,1):
 		for l in range(deltaMin1,delta,1):
 			img[(i+k),(j+l),0] = 0
-			img[(i+k),(j+l),1] = 255
-			img[(i+k),(j+l),2] = 0
+			img[(i+k),(j+l),1] = 0
+			img[(i+k),(j+l),2] = 255
 
 
 	delta = 7
@@ -65,7 +65,7 @@ def makeDot2(img,i,j):
 		for l in range(deltaMin1,delta,1):
 			img[(i+k),(j+l),0] = 0
 			img[(i+k),(j+l),1] = 255
-			img[(i+k),(j+l),2] = 255
+			img[(i+k),(j+l),2] = 0
 
 
 	return img
@@ -130,7 +130,7 @@ files = os.listdir(path)
 
 #NFilesMax = len(files)
 #idx = int(input("NFilesMax  %d "%(NFilesMax)))
-idx = 10
+idx = 40
 
 img = cv2.imread(os.path.join(path,files[idx]))
 img2 = img
@@ -150,7 +150,7 @@ thickness = 1
 img2 = img.copy()
 
 
-NoOfDivision = 20
+NoOfDivision = 50
 rowDivSpace = M//NoOfDivision
 print("NoOfDivision %d rowDivSpace %d "%(NoOfDivision,rowDivSpace))
 
@@ -162,39 +162,43 @@ jRight =[]
 
 thisRow = 0
 
-bordRatioTh = 0.3
-errThr = 0.1
+bordRatioTh = 0.5
+errThr = 0.3
+
+# for i in range((M//5),(M-rowDivSpace),rowDivSpace):
+# 	start_point = (0,i)
+# 	end_point = (N,i)
+# 	color2 = (0, 0, 255) # BGR format
+# 	thisRow = 0
+# 	for j in range(0,(N//3),1):
+# 		bordStat = isBorder(img,i,j,5)
+# 		#print("i : %d  j : %d   %3.4f "%(i,j,bordStat))
+# 		err = abs (bordRatioTh - abs(bordStat)/255)
+		
+# 		if (err<=errThr) and (j>1) and (j<(N//3)) and (thisRow==0):
+# 			#print("iLeft  %d %d"%(i,j))
+# 			img2 = makeDot(img2, i, j)
+# 			iLeft.append(i)
+# 			jLeft.append(j)
+# 			thisRow = 1
+        
 
 for i in range((M//5),(M-rowDivSpace),rowDivSpace):
 	start_point = (0,i)
 	end_point = (N,i)
 	color2 = (0, 0, 255) # BGR format
 	thisRow = 0
+
 	for j in range(0,(N//3),1):
-		bordStat = isBorder(img,i,j,5)
-		#print("i : %d  j : %d   %3.4f "%(i,j,bordStat))
-		err = abs (bordRatioTh - abs(bordStat)/255)
-		
 		j2 = (N-1-5) - j
 		bordStat2 = isBorder(img,i,j2,5)
 		err2 = abs(bordRatioTh -abs(bordStat2/255)) 
-
-		
-
-#		if (bordStat>=102) and (bordStat<=153):
-		if (err<=errThr) and (j>1) and (j<(N//3)) and (thisRow==0):
-			#print("iLeft  %d %d"%(i,j))
-			img2 = makeDot(img2, i, j)
-			iLeft.append(i)
-			jLeft.append(j)
-			thisRow = 1
         
 		if (err2<errThr) and (j2>(2*N//3)) and (j<N)and (thisRow==0):
 			img2 = makeDot2(img2, i, j2)
 			iRight.append(i)
 			jRight.append(j2)
 			thisRow = 1
-        
 
 
 
@@ -216,7 +220,7 @@ N = len(iLeft)
 
 
 
-img2 = drawAPolyLine(iLeft, jLeft,img2,0)
+#img2 = drawAPolyLine(iLeft, jLeft,img2,0)
 img2 = drawAPolyLine(iRight, jRight,img2,1)
 
 
