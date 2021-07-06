@@ -96,7 +96,7 @@ os.system("cls")
 path = r"C:\Users\Esa\Pictures\_DATASET\unetpusbin\result_fold1"
 files = os.listdir(path)
 
-idx = 350
+idx = 1
 
 img = cv2.imread(os.path.join(path,files[idx]))
 img2 = img
@@ -118,8 +118,6 @@ while lastSumRow <= 0:
 Mmin = iR - 1
 
 
-
-
 #print("%d %d"%(M,N))
 #print("--------------------------")
 
@@ -132,7 +130,7 @@ thickness = 1
 img2 = img.copy()
 
 
-NoOfDivision = 20
+NoOfDivision = 30
 rowDivSpace = M//NoOfDivision
 print("NoOfDivision %d rowDivSpace %d "%(NoOfDivision,rowDivSpace))
 
@@ -199,7 +197,7 @@ for i in range(N):
 	print("i: %d  j: %d "%(iLeft[i], jLeft[i]))
 
 
-img2 = drawAPolyLine(iLeft, jLeft,img2,0)
+#img2 = drawAPolyLine(iLeft, jLeft,img2,0)
 
 
 cv2.imshow("["+str(idx)+"] --- (2)"+files[idx], img2)
