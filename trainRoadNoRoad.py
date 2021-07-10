@@ -6,7 +6,6 @@ import cv2
 
 os.system('cls')
 
-
 csvPath = r'C:\Users\INKOM06\Pictures\roadDataset\oregon_us\roads_annotated\ds\_csv'
 
 csvFiles = os.listdir(csvPath)
