@@ -98,6 +98,8 @@ tp, fn, fp, tn = confusion_matrix(actual,predicted,labels=[1,0]).reshape(-1)
 matrix = classification_report(actual,predicted,labels=[1,0])
 print('Classification report : \n',matrix)
 
+## print the output of CM
+
 
 
 
