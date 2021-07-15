@@ -9,7 +9,7 @@ from sklearn.metrics import classification_report
 
 os.system('cls')
 
-
+# Get path for the input and result
 rootPath = r'C:\Users\INKOM06\Pictures\_DATASET\Unet\stage0_test'
 resPath = r'C:\Users\INKOM06\Pictures\_DATASET\Unet\result\result600train'
 
