@@ -13,5 +13,4 @@ I5 = I + 200
 J = np.array([I1,I2])
 
 cv2.imshow("J",J[1])
-
 cv2.waitKey(0)
