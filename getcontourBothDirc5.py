@@ -93,10 +93,11 @@ def drawAPolyLine(iLeft, jLeft, img, linePost):
 
 
 os.system("cls")
-path = r"C:\Users\Esa\Pictures\_DATASET\unetpusbin\result_fold1"
+#path = r"C:\Users\Esa\Pictures\_DATASET\unetpusbin\result_fold1"
+path = r"C:\Users\Esa\Pictures\_DATASET\unetpusbin\result_fold2"
 files = os.listdir(path)
 
-idx = 450
+idx = int(input("Image index? "))
 
 img = cv2.imread(os.path.join(path,files[idx]))
 img2 = img
@@ -149,16 +150,18 @@ color2 = (0, 0, 255) # BGR format
 
 #cv2.imshow("Original Image", img)
 
-Mmax = int(0.7*M)
+Mmax = int(0.8*M)
 
-thickness =3
+thickness =2
 for i in range(Mmin,Mmax,rowDivSpace):
 	start_point = (0,i)
 	end_point = (N,i)
 	img2 = cv2.line(img2, start_point, end_point, color2, thickness)
 
+cv2.imshow("Grid", img2)
 
 
+#For detectiing the left edge
 for i in range(Mmin,Mmax,rowDivSpace):
 	thisRow = 0
 	for j in range(0,(int(0.8*N)),1):
@@ -172,7 +175,50 @@ for i in range(Mmin,Mmax,rowDivSpace):
 			thisRow = 1
 
 
+x1 = np.asfarray(iLeft, dtype="int8")
+y1 = np.asfarray(jLeft, dtype="int8")
 
+fit = np.polyfit(x1, y1, 2)
+a = fit[0]
+b = fit[1]
+c = fit[2]
+
+print(a)
+print(b)
+print(c)
+
+Ny1 = y1.size
+y = np.arange(x1[0],x1[Ny1-1],1)
+x = a * np.square(y) + b * y + c
+
+xI = x.astype(int)  # j index
+yI = y.astype(int)  # i index
+
+# print(x)
+# print(" ----------------- ")
+# print(y)
+# print(" ----------------- ")
+# print(yI)
+# print("N %d "%(Npts))
+# print(xI[1])
+
+
+color3 = (0, 255, 0) # BGR format
+Npts = x.size
+for i in range(1,Npts,1):
+	start_point = (xI[i-1],yI[i-1])
+	end_point = (xI[i],yI[i])
+	img2 = cv2.line(img2, start_point, end_point, color3, thickness)
+
+
+
+iLeft =[]
+jLeft =[]
+
+
+
+
+#### For detectiing the right edge
 for i in range(Mmin,Mmax,rowDivSpace):
 	thisRow = 0
 	for j in range(0,(int(0.8*N)),1):
@@ -187,23 +233,51 @@ for i in range(Mmin,Mmax,rowDivSpace):
 			thisRow = 1
 
 
+x1 = np.asfarray(iLeft, dtype="int8")
+y1 = np.asfarray(jLeft, dtype="int8")
+
+fit = np.polyfit(x1, y1, 2)
+a = fit[0]
+b = fit[1]
+c = fit[2]
+
+print(a)
+print(b)
+print(c)
+
+Ny1 = y1.size
+y = np.arange(x1[0],x1[Ny1-1],1)
+x = a * y**2 + b * y + c
+
+xI = x.astype(int)  # j index
+yI = y.astype(int)  # i index
+
+
+color3 = (0, 255, 0) # BGR format
+Npts = x.size
+for i in range(1,Npts,1):
+	start_point = (xI[i-1],yI[i-1])
+	end_point = (xI[i],yI[i])
+	img2 = cv2.line(img2, start_point, end_point, color3, thickness)
 
 
 
-#print("--------------------------")
+
+
+# #print("--------------------------")
 N = len(iLeft)
 print(N)
 for i in range(N):
 	print("i: %d  j: %d "%(iLeft[i], jLeft[i]))
 
 
-#img2 = drawAPolyLine(iLeft, jLeft,img2,0)
+
 
 
 cv2.imshow("["+str(idx)+"] --- (2)"+files[idx], img2)
 
 
-print("Done! getcontourBothDirc3.py")
+print("Done! getcontourBothDirc4.py")
 
 cv2.waitKey(0)
 cv2.destroyAllWindows()

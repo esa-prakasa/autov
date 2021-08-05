@@ -11,8 +11,7 @@ M = img0.shape[0]
 N = img0.shape[1]
 
 
-for i in range(M):
-	
+#for i in range(M):
 
 
 

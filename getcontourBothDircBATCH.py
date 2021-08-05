@@ -162,8 +162,6 @@ for idx in range(500,numOfFilesInFolder,1):
         img2 = cv2.line(img2, start_point, end_point, color2, thickness)
         
 
-
-
     for i in range(Mmin,Mmax,rowDivSpace):
         thisRow = 0
         for j in range(0,(int(0.8*N)),1):

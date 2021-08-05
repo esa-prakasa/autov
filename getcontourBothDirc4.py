@@ -96,7 +96,7 @@ os.system("cls")
 path = r"C:\Users\Esa\Pictures\_DATASET\unetpusbin\result_fold1"
 files = os.listdir(path)
 
-idx = 450
+idx = 300
 
 img = cv2.imread(os.path.join(path,files[idx]))
 img2 = img
@@ -158,7 +158,7 @@ for i in range(Mmin,Mmax,rowDivSpace):
 	img2 = cv2.line(img2, start_point, end_point, color2, thickness)
 
 
-
+#For detectiing the left edge
 for i in range(Mmin,Mmax,rowDivSpace):
 	thisRow = 0
 	for j in range(0,(int(0.8*N)),1):
@@ -171,8 +171,44 @@ for i in range(Mmin,Mmax,rowDivSpace):
 			jLeft.append(j)
 			thisRow = 1
 
+y1 = np.asfarray(iLeft, dtype="int8")
+x1 = np.asfarray(jLeft, dtype="int8")
+
+fit = np.polyfit(x1, y1, 2)
+a = fit[0]
+b = fit[1]
+c = fit[2]
+
+print(a)
+print(b)
+print(c)
+
+x = np.arange(0,x1[0],1)
+y = a * np.square(x) + b * x + c
+xI = x.astype(int)  # j index
+yI = y.astype(int)  # i index
+
+# print(x)
+# print(" ----------------- ")
+# print(y)
+# print(" ----------------- ")
+# print(yI)
+# print("N %d "%(Npts))
+# print(xI[1])
 
 
+color3 = (0, 255, 0) # BGR format
+Npts = x.size
+for i in range(1,Npts,1):
+	start_point = (xI[i-1],yI[i-1])
+	end_point = (xI[i],yI[i])
+	img2 = cv2.line(img2, start_point, end_point, color3, thickness)
+
+
+
+iLeft =[]
+jLeft =[]
+#### For detectiing the right edge
 for i in range(Mmin,Mmax,rowDivSpace):
 	thisRow = 0
 	for j in range(0,(int(0.8*N)),1):
@@ -187,23 +223,46 @@ for i in range(Mmin,Mmax,rowDivSpace):
 			thisRow = 1
 
 
+y1 = np.asfarray(iLeft, dtype="int8")
+x1 = np.asfarray(jLeft, dtype="int8")
+
+fit = np.polyfit(x1, y1, 2)
+a = fit[0]
+b = fit[1]
+c = fit[2]
+
+print(a)
+print(b)
+print(c)
+
+x = np.arange(x1[0],N,1)
+y = a * np.square(x) + b * x + c
+xI = x.astype(int)  # j index
+yI = y.astype(int)  # i index
 
 
+color3 = (0, 255, 0) # BGR format
+Npts = x.size
+for i in range(1,Npts,1):
+	start_point = (xI[i-1],yI[i-1])
+	end_point = (xI[i],yI[i])
+	img2 = cv2.line(img2, start_point, end_point, color3, thickness)
 
-#print("--------------------------")
+
+# #print("--------------------------")
 N = len(iLeft)
 print(N)
 for i in range(N):
 	print("i: %d  j: %d "%(iLeft[i], jLeft[i]))
 
 
-#img2 = drawAPolyLine(iLeft, jLeft,img2,0)
+
 
 
 cv2.imshow("["+str(idx)+"] --- (2)"+files[idx], img2)
 
 
-print("Done! getcontourBothDirc3.py")
+print("Done! getcontourBothDirc4.py")
 
 cv2.waitKey(0)
 cv2.destroyAllWindows()
