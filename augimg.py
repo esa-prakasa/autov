@@ -10,6 +10,7 @@ from keras.preprocessing.image import ImageDataGenerator
 from matplotlib import pyplot
 os.system("cls")
 
+
 srcFolder = "C:\\Users\\INKOM06\\Pictures\\roadDataset\\bandung\\temp\\B\\"
 tgtFolder = "C:\\Users\\INKOM06\\Pictures\\roadDataset\\bandung\\temp\\B_aug\\"
 
