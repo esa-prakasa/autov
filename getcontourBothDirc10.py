@@ -5,6 +5,8 @@ import os
 import numpy as np
 import matplotlib.pyplot as plt  
 
+
+
 def isBorder(img,iCent,jCent,fSz):
 	fSz2 = fSz//2
 	sumPix = float(0)
@@ -104,7 +106,7 @@ rgbPath =r"C:\Users\Esa\Pictures\_DATASET\unetpusbin\topCamSegmented\kFoldFolder
 files = os.listdir(path)
 # idx = int(input("Image index? "))
 idx = random.randint(0,len(files))
-# idx = 33
+idx = 33
 
 
 print("============= File name is %s "%(files[idx]))
@@ -314,6 +316,8 @@ rowImg1 = np.hstack((oriImgPerserved, img))
 rowImg2 = np.hstack((edgeImgToShow, oriImg))
 finalImage = np.vstack((rowImg1, rowImg2))
 cv2.imshow("Final Image No:"+str(idx),finalImage)
+
+cv2.imshow("BW", edgeImgToShow)
 
 cv2.waitKey(0)
 cv2.destroyAllWindows()
