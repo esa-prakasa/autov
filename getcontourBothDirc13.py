@@ -1,9 +1,27 @@
 ## Right side detection
 
+from ntpath import join
 import cv2
 import os
 import numpy as np
 import matplotlib.pyplot as plt  
+
+
+def createOverlayImage(rgbImage, bwImage):
+	M = rgbImage.shape[0]
+	N = rgbImage.shape[1]
+
+	maskedImage = np.zeros((M,N,3), dtype=np.uint8)
+	maskedImage = rgbImage
+
+	for i in range(M):
+		for j in range(N):
+			if bwImage[i,j,0]>100:
+				maskedImage[i,j,0] = 100 #B
+				maskedImage[i,j,1] = rgbImage[i,j,2] #G
+				maskedImage[i,j,2] = 100 #R
+
+	return maskedImage
 
 
 
@@ -62,11 +80,11 @@ def drawAPolyLine(iLeft, jLeft, img, linePost):
 	if linePost ==0:
 		for jIdx in range(0, (N//2), 2):	
 			xIn.append(float(jIdx))
-		lineColor = (0, 255, 0)
+		lineColor = (0, 255, 255)
 	if linePost ==1:
 		for jIdx in range((N//2),(N-1), 2):	
 			xIn.append(float(jIdx))
-		lineColor = (255, 0, 255)
+		lineColor = (0, 255, 255)
 
 	#print(xIn)
 	#print(type(xIn))
@@ -81,7 +99,7 @@ def drawAPolyLine(iLeft, jLeft, img, linePost):
 
 	NFit = len(xIn)
 	
-	lineThickness = 3
+	lineThickness = 1
 
 	for i in range(NFit-2):
 		start_point = (int(xIn[i]), int(yFit[i])) 
@@ -90,10 +108,16 @@ def drawAPolyLine(iLeft, jLeft, img, linePost):
 		img = cv2.line(img, start_point, end_point, lineColor, lineThickness)
 	
 	return img
+
+
+
+
+
+
 import random
 
+# os.system("cls")
 
-os.system("cls")
 
 foldNo = [0, 1, 2, 3]
 rgbFold = [3, 0, 1, 2]
@@ -106,9 +130,17 @@ rgbPath =r"C:\Users\Esa\Pictures\_DATASET\unetpusbin\topCamSegmented\kFoldFolder
 files = os.listdir(path)
 # idx = int(input("Image index? "))
 idx = random.randint(0,len(files))
-idx = 33  ## centered vanishing point
-idx = 100  ## centered vanishing point
-idx = 500  ## vanishing point goes to left side
+# idx = 578  ## centered vanishing point
+# idx = 33  ## centered vanishing point
+# idx = 100  ## centered vanishing point
+# idx = 500  ## vanishing point goes to left side
+# idx = 700
+# 
+#   ## vanishing point goes to left side
+# idx = 900  ## vanishing point goes to left side
+
+# import random
+# idx = random.randint(1, 900)
 
 
 print("============= File name is %s "%(files[idx]))
@@ -118,6 +150,32 @@ rgbPath = os.path.join(rgbPath,folderName)
 rgbPath = os.path.join(rgbPath,"images")
 rgbPath = os.path.join(rgbPath,files[idx])
 print("============= RGB File name is %s "%(rgbPath))
+
+labelPath = r"C:\Users\Esa\Pictures\_DATASET\unetpusbin\topCamSegmented\kFoldFolders\D"+str(3)
+labelPath = os.path.join(labelPath,folderName,"mask")
+# labelPath = os.path.join(labelPath,files[idx])
+# C:\Users\Esa\Pictures\_DATASET\unetpusbin\topCamSegmented\kFoldFolders\D0\00008_0ZxQhvAQvI\mask
+
+labelPath = os.path.join(labelPath,files[idx])
+print("FILENAME is >>>>> "+labelPath)
+
+labelImg = cv2.imread(labelPath)
+# img2 = img
+
+M = labelImg.shape[0]
+N = labelImg.shape[1]
+
+dim =(int(ratio*labelImg.shape[1]),int(ratio*labelImg.shape[0]))
+labelImg = cv2.resize(labelImg, dim, interpolation = cv2.INTER_AREA)
+
+
+
+
+
+
+
+
+
 
 
 oriImg = cv2.imread(rgbPath)
@@ -140,11 +198,41 @@ img = cv2.resize(img, dim, interpolation = cv2.INTER_AREA)
 
 
 img2 = cv2.resize(img2, dim, interpolation = cv2.INTER_AREA)
-# cv2.imshow("BW", img2)
+
+
+
+cv2.imshow("BW", img2)
+img2Perserved = img2.copy()
+
+
+
+# =======================
+# Find the bottom border
+# =======================
+
+# M = img2.shape[0]
+# N = img2.shape[1]
+
+# i = M-5
+# horzSum = 0
+# for j in range(N):
+# 	horzSum = horzSum + img2[i,j,0]
+# print("Horizontal Sum")
+# print(horzSum)
+# print("Horizontal Sum")
+
+
+
 
 img2BW = cv2.Canny(img2, 100, 150)
 kernel = np.ones((1,1), np.uint8)
 img2BW = cv2.dilate(img2BW, kernel, iterations=1)
+
+edPathSave = r"C:\Users\Esa\Pictures\_DATASET\unetpusbin\edges"
+edFileName = "edge_"+str(idx)+".png"
+edFullPath = os.path.join(edPathSave, edFileName)
+cv2.imwrite(edFullPath, img2BW)
+cv2.imshow("img2BW edges", img2BW)
 
 
 
@@ -186,8 +274,11 @@ oriImg = cv2.line(oriImg, [jAvg,iVanPoint-dI], [jAvg,iVanPoint+dI], color3, thic
 
 
 
+color2 = (255, 255, 255) # BGR format
+color3 = (255, 255, 255) # BGR format
+
 edgeImgToShow = np.zeros((M,N,3), dtype=np.uint8)
-thickVanPoint = 5
+thickVanPoint = 3
 for k in range (3):
 	edgeImgToShow[:,:,k] = img2BW
 edgeImgToShow = cv2.line(edgeImgToShow, [jAvg-dJ,iVanPoint], [jAvg+dJ,iVanPoint], color2, thickVanPoint)
@@ -201,141 +292,90 @@ N = img2.shape[1]
 print("M %d"%(M))
 print("N %d"%(N))
 
-iRgEdge = iVanPoint
-print("iRgEdge %d"%(iRgEdge))
 
-sumPix = 0
-while sumPix<100:
-	sumPix=0
-	for k in range (N-20,N,1):
-		sumPix = sumPix + img2BW[iRgEdge,k]
-	iRgEdge = iRgEdge + 1
-
-print("iEgEdge: %d  sumPix: %d "%(iRgEdge,sumPix))
-print("Final iRgEdge %d"%(iRgEdge))
-
-iLfEdge = iVanPoint
-sumPix = 0
-while sumPix<100:
-	sumPix=0
-	for k in range (0,20,1):
-		sumPix = sumPix + img2BW[iLfEdge,k]
-	iLfEdge = iLfEdge + 1
-
-iNrPoint = min(iLfEdge, iRgEdge)
-
+stepSz = 3
 
 rgSideI = []
 rgSideJ = []
-for i in range(iVanPoint, iRgEdge,10):
-    sum_i = 0
-    sum_j = 0
-    nPix = 0
-    for j in range(jAvg,N,1):
-        if img2BW[i,j] == 255:
-            rgSideI.append(i)
-            rgSideJ.append(j)
-            for k in range(-3,3,1):
-                for l in range(-3,3,1):
-                    img2[i+k,j+l,0] = 0
-                    img2[i+k,j+l,1] = 0
-                    img2[i+k,j+l,2] = 255
-    
-                    oriImg[i+k,j+l,0] = 0
-                    oriImg[i+k,j+l,1] = 0
-                    oriImg[i+k,j+l,2] = 255
-
-                    edgeImgToShow[i+k,j+l,0] = 0
-                    edgeImgToShow[i+k,j+l,1] = 0
-                    edgeImgToShow[i+k,j+l,2] = 255
-
-
-
-
-
-
-
 lfSideI = []
 lfSideJ = []
-for i in range(iVanPoint, iLfEdge,10):
-    sum_i = 0
-    sum_j = 0
-    nPix = 0
-    for j in range(0,jAvg,1):
-        if img2BW[i,j] == 255:
+mid_I = []
+mid_J = []
+
+Ndiv2 = N//2
+
+print("iVanPoint: %d "%(iVanPoint))
+
+M = img2BW.shape[0]
+
+
+for i in range(iVanPoint, int(0.9*M), stepSz):
+    j1 = 0
+    while j1 < jAvg:
+        if img2BW[i,j1] > 200:
             lfSideI.append(i)
-            lfSideJ.append(j)
-            for k in range(-3,3,1):
-                for l in range(-3,3,1):
-                    img2[i+k,j+l,0] = 240
-                    img2[i+k,j+l,1] = 220
-                    img2[i+k,j+l,2] = 60
-    
-                    oriImg[i+k,j+l,0] = 240
-                    oriImg[i+k,j+l,1] = 220
-                    oriImg[i+k,j+l,2] = 60
+            lfSideJ.append(j1)
+        j1 = j1 + 1
 
-                    edgeImgToShow[i+k,j+l,0] = 240
-                    edgeImgToShow[i+k,j+l,1] = 220
-                    edgeImgToShow[i+k,j+l,2] = 60
+    j2 = Ndiv2
+    while (j2 >= jAvg
+	
+	) and (j2<N):
+        if img2BW[i,j2] > 200:
+            rgSideI.append(i)
+            rgSideJ.append(j2)
+        j2 = j2 + 1
 
+for x in lfSideI:
+    print("Left: %d "%(x))
 
+print(lfSideI)
+print(N)
 
-
-print("------------")
-print(len(rgSideI))
-print(len(rgSideJ))
-
-print(len(lfSideI))
-print(len(lfSideJ))
-
-
-nRight = len(rgSideJ)
-nLeft  = len(lfSideJ)
-nCenter = min(nRight, nLeft)
-
-
-for idx in range (nCenter):
-	iMid = round((rgSideI[idx] + lfSideI[idx])/2)
-	jMid = round((rgSideJ[idx] + lfSideJ[idx])/2)
-	for k in range(-3,3,1):
-		for l in range(-3,3,1):
-			img2[iMid+k,jMid+l,0] = 80
-			img2[iMid+k,jMid+l,1] = 80
-			img2[iMid+k,jMid+l,2] = 80
-			
-			oriImg[iMid+k,jMid+l,0] = 80
-			oriImg[iMid+k,jMid+l,1] = 80
-			oriImg[iMid+k,jMid+l,2] = 80
-
-			edgeImgToShow[iMid+k,jMid+l,0] = 0
-			edgeImgToShow[iMid+k,jMid+l,1] = 255
-			edgeImgToShow[iMid+k,jMid+l,2] = 255
-
-
-cv2.imshow("Edge Images", img2BW[iVanPoint:img2BW.shape[0],:])
-
-
-color5 = (200, 100, 0) # BGR format
-edgeImgToShow = cv2.line(edgeImgToShow, [0,iVanPoint], [img2BW.shape[1],iVanPoint], color5, 2)
+print("Helooooo")
 
 
 
 
+NLeft = len(lfSideI)
+for i in range(NLeft):
+    for k in range(-2,2,1):
+        for l in range(-2,2,1):
+            oriImg[lfSideI[i]+k, lfSideJ[i]+l, 0] = 255
+            oriImg[lfSideI[i]+k, lfSideJ[i]+l, 1] = 0
+            oriImg[lfSideI[i]+k, lfSideJ[i]+l, 2] = 0
 
-# cv2.imshow("Road Side Detection", edgeImgToShow)
-# cv2.imshow("ORI RGB", oriImg)
-# cv2.imshow("Img BW Edge", img2BW)
-# cv2.imshow("Original Image with Line", img2)
 
-print("Image index %d "%(idx))
+NRight = len(rgSideI)
+for i in range(NRight):
+    for k in range(-2,2,1):
+        for l in range(-2,2,1):
+            oriImg[rgSideI[i]+k, rgSideJ[i]+l, 0] = 0
+            oriImg[rgSideI[i]+k, rgSideJ[i]+l, 1] = 0
+            oriImg[rgSideI[i]+k, rgSideJ[i]+l, 2] = 255
+
+
 
 rowImg1 = np.hstack((oriImgPerserved, img))
 rowImg2 = np.hstack((edgeImgToShow, oriImg))
 finalImage = np.vstack((rowImg1, rowImg2))
 cv2.imshow("Final Image No:"+str(idx),finalImage)
 
-cv2.imshow("BW", edgeImgToShow)
+
+
+# pictFigure = np.hstack((oriImgPerserved, img2Perserved))
+
+oriImgPerserved2 = oriImgPerserved.copy()
+overlayImg = createOverlayImage(oriImgPerserved2, img2Perserved)
+
+pictFigure1 = np.hstack((oriImgPerserved, labelImg))
+pictFigure2 = np.hstack((img2Perserved, overlayImg))
+pictFigure  = np.vstack((pictFigure1, pictFigure2))
+cv2.imshow("Manuscript Figure "+str(idx),pictFigure)
+
+os.system("cls")
+print("============= Helooooo ===============")
+print(files[idx]+" ("+str(idx)+")")
 
 cv2.waitKey(0)
 cv2.destroyAllWindows()

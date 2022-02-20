@@ -109,6 +109,8 @@ idx = random.randint(0,len(files))
 idx = 33  ## centered vanishing point
 idx = 100  ## centered vanishing point
 idx = 500  ## vanishing point goes to left side
+idx = 700  ## vanishing point goes to left side
+idx = 900  ## vanishing point goes to left side
 
 
 print("============= File name is %s "%(files[idx]))
@@ -224,10 +226,11 @@ while sumPix<100:
 
 iNrPoint = min(iLfEdge, iRgEdge)
 
+stepSz = 10
 
 rgSideI = []
 rgSideJ = []
-for i in range(iVanPoint, iRgEdge,10):
+for i in range(iVanPoint, iRgEdge,stepSz):
     sum_i = 0
     sum_j = 0
     nPix = 0
@@ -257,7 +260,10 @@ for i in range(iVanPoint, iRgEdge,10):
 
 lfSideI = []
 lfSideJ = []
-for i in range(iVanPoint, iLfEdge,10):
+
+
+# for i in range(iVanPoint, iLfEdge,stepSz):
+for i in range(iVanPoint, iRgEdge,stepSz):
     sum_i = 0
     sum_j = 0
     nPix = 0
@@ -265,6 +271,7 @@ for i in range(iVanPoint, iLfEdge,10):
         if img2BW[i,j] == 255:
             lfSideI.append(i)
             lfSideJ.append(j)
+
             for k in range(-3,3,1):
                 for l in range(-3,3,1):
                     img2[i+k,j+l,0] = 240
@@ -278,6 +285,7 @@ for i in range(iVanPoint, iLfEdge,10):
                     edgeImgToShow[i+k,j+l,0] = 240
                     edgeImgToShow[i+k,j+l,1] = 220
                     edgeImgToShow[i+k,j+l,2] = 60
+    
 
 
 
@@ -293,31 +301,46 @@ print(len(lfSideJ))
 nRight = len(rgSideJ)
 nLeft  = len(lfSideJ)
 nCenter = min(nRight, nLeft)
+# nCenter = 30
+
+# for idx in range (5):
+#     iMid = round((rgSideI[idx] + lfSideI[idx])/2)
+#     print("iLeft: %d   iRight: %d  --> iMidPoint %d"%(lfSideI[idx], rgSideI[idx], iMid))
+
+# print("------------------")
+# for idx in range (5):
+#     jMid = round((rgSideJ[idx] + lfSideJ[idx])/2)
+#     print("jLeft: %d   jRight: %d  --> MidPoint %d"%(lfSideJ[idx], rgSideJ[idx], jMid))
+
 
 
 for idx in range (nCenter):
-	iMid = round((rgSideI[idx] + lfSideI[idx])/2)
-	jMid = round((rgSideJ[idx] + lfSideJ[idx])/2)
-	for k in range(-3,3,1):
-		for l in range(-3,3,1):
-			img2[iMid+k,jMid+l,0] = 80
-			img2[iMid+k,jMid+l,1] = 80
-			img2[iMid+k,jMid+l,2] = 80
-			
-			oriImg[iMid+k,jMid+l,0] = 80
-			oriImg[iMid+k,jMid+l,1] = 80
-			oriImg[iMid+k,jMid+l,2] = 80
+    iMid = round((rgSideI[idx] + lfSideI[idx])/2)
+    jMid = round((rgSideJ[idx] + lfSideJ[idx])/2)
+    for k in range(-2,2,1):
+        for l in range(-2,2,1):
+            img2[iMid+k,jMid+l,0] = 80
+            img2[iMid+k,jMid+l,1] = 80
+            img2[iMid+k,jMid+l,2] = 80
+            
+            oriImg[iMid+k,jMid+l,0] = 80
+            oriImg[iMid+k,jMid+l,1] = 80
+            oriImg[iMid+k,jMid+l,2] = 80
+            edgeImgToShow[iMid+k,jMid+l,0] = 0
+            edgeImgToShow[iMid+k,jMid+l,1] = 255
+            edgeImgToShow[iMid+k,jMid+l,2] = 255
 
-			edgeImgToShow[iMid+k,jMid+l,0] = 0
-			edgeImgToShow[iMid+k,jMid+l,1] = 255
-			edgeImgToShow[iMid+k,jMid+l,2] = 255
 
-
-cv2.imshow("Edge Images", img2BW[iVanPoint:img2BW.shape[0],:])
+M = img2BW.shape[0]
+NDivFit = 7
+cv2.imshow("Edge Images", img2BW[iVanPoint:M,:])
+iFitPoints = np.linspace(iVanPoint,(M-10),NDivFit)
+print(iFitPoints)
 
 
 color5 = (200, 100, 0) # BGR format
-edgeImgToShow = cv2.line(edgeImgToShow, [0,iVanPoint], [img2BW.shape[1],iVanPoint], color5, 2)
+for i in range(NDivFit-2):
+    edgeImgToShow = cv2.line(edgeImgToShow, [0,int(iFitPoints[i])], [img2BW.shape[1],int(iFitPoints[i])], color5, 2)
 
 
 
